@@ -42,7 +42,11 @@ SELECT client.cli_nom AS 'Nom du Client', hotel.hot_nom AS 'Nom de l’Hôtel', 
 
 -- 11. Afficher la liste des chambres avec le nom de l’hôtel et le nom de la station Le résultat doit faire apparaître le nom de la station, le nom de l’hôtel, le numéro de la chambre et sa capacité)
 
+SELECT station.sta_nom AS 'Nom de la Station', hotel.hot_nom AS 'Nom de l’Hôtel', chambre.cha_numero AS 'Numéro de la Chambre', chambre.cha_capacite AS 'Capacité' FROM chambre JOIN hotel ON chambre.cha_hot_id = hotel.hot_id JOIN station ON hotel.hot_sta_id = station.sta_id; 
+
 -- 12. Afficher les réservations avec le nom du client et le nom de l’hôtel Le résultat doit faire apparaître le nom du client, le nom de l’hôtel, la date de début du séjour et la durée du séjour
+
+SELECT client.cli_nom AS 'Nom du Client', hotel.hot_nom AS 'Nom de l’Hôtel', reservation.res_date_debut AS 'Date de Début du Séjour', reservation.res_date_fin AS 'Date de Fin du Séjour', DATEDIFF(reservation.res_date_fin, reservation.res_date_debut) AS 'Durée du Séjour (Jours)' FROM reservation JOIN chambre ON reservation.res_cha_id = chambre.cha_id JOIN hotel ON chambre.cha_hot_id = hotel.hot_id JOIN client ON reservation.res_cli_id = client.cli_id;
 
 -- 13. Compter le nombre d’hôtel par station
 
