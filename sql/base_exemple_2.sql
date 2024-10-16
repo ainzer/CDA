@@ -54,10 +54,10 @@ SELECT e.titre AS "Titre", COUNT(e.noemp) AS "Nombre d'Employés" FROM employe e
 SELECT d.noregion AS "Région", AVG(e.salaire) AS "Moyenne des Salaires", SUM(e.salaire) AS "Somme des Salaires" FROM employe e JOIN dept d ON e.nodep = d.nodept GROUP BY d.noregion;
 
 -- 46. Afficher les numéros des départements ayant au moins 3 employés.
-
+Rechercher le nombre de titres différents.
 SELECT e.nodep AS "Numéro Département", COUNT(e.noemp) AS "Nombre d'Employés" FROM employe e GROUP BY e.nodep HAVING COUNT(e.noemp) >= 3;
 
--- 47. Afficher les lettres qui sont l'initiale d'au moins trois employés.
+-- 47. Afficher les lettres qui sont l'initiale d'au moins trois employés.      
 
 SELECT LEFT(e.nom, 1) AS "Initiale", COUNT(e.noemp) AS "Nombre d'Employés" FROM employe e GROUP BY LEFT(e.nom, 1) HAVING COUNT(e.noemp) >= 3;
 
