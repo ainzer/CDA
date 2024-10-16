@@ -50,10 +50,20 @@ SELECT client.cli_nom AS 'Nom du Client', hotel.hot_nom AS 'Nom de l’Hôtel', 
 
 -- 13. Compter le nombre d’hôtel par station
 
+SELECT station.sta_nom AS 'Nom de la Station', COUNT(hotel.hot_id) AS 'Nombre d’Hôtels' FROM hotel JOIN station ON hotel.hot_sta_id = station.sta_id GROUP BY station.sta_nom;
+
 -- 14. Compter le nombre de chambre par station
+
+SELECT station.sta_nom AS 'Nom de la Station', COUNT(chambre.cha_id) AS 'Nombre de Chambres' FROM chambre JOIN hotel ON chambre.cha_hot_id = hotel.hot_id JOIN station ON hotel.hot_sta_id = station.sta_id GROUP BY station.sta_nom;
 
 -- 15. Compter le nombre de chambre par station ayant une capacité > 1
 
+SELECT station.sta_nom AS 'Nom de la Station', COUNT(chambre.cha_id) AS 'Nombre de Chambres (Capacité > 1)' FROM chambre JOIN hotel ON chambre.cha_hot_id = hotel.hot_id JOIN station ON hotel.hot_sta_id = station.sta_id WHERE chambre.cha_capacite > 1 GROUP BY station.sta_nom;
+
 -- 16. Afficher la liste des hôtels pour lesquels Mr Squire a effectué une réservation
 
+SELECT hotel.hot_nom AS 'Nom de l’Hôtel', hotel.hot_categorie AS 'Catégorie', hotel.hot_ville AS 'Ville' FROM reservation JOIN chambre ON reservation.res_cha_id = chambre.cha_id JOIN hotel ON chambre.cha_hot_id = hotel.hot_id JOIN client ON reservation.res_cli_id = client.cli_id WHERE client.cli_nom = 'Squire';
+
 -- 17. Afficher la durée moyenne des réservations par station
+
+SELECT station.sta_nom AS 'Nom de la Station', AVG(DATEDIFF(reservation.res_date_fin, reservation.res_date_debut)) AS 'Durée Moyenne des Réservations (jours)' FROM reservation JOIN chambre ON reservation.res_cha_id = chambre.cha_id JOIN hotel ON chambre.cha_hot_id = hotel.hot_id JOIN station ON hotel.hot_sta_id = station.sta_id GROUP BY station.sta_nom;
