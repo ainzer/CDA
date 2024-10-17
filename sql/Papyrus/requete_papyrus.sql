@@ -60,9 +60,15 @@ SELECT e.numcom, e.datcom FROM entcom e WHERE e.numfou = (SELECT e2.numfou FROM 
 
 -- 14. Dans les articles susceptibles d’être vendus, lister les articles moins chers (basés sur Prix1) que le moins cher des rubans (article dont le premier caractère commence par R). On affichera le libellé de l’article et prix1
 
+SELECT p.libart, v.prix1 FROM produit p JOIN vente v ON p.codart = v.codart WHERE v.prix1 < (SELECT MIN(v2.prix1) FROM produit p2 JOIN vente v2 ON p2.codart = v2.codart WHERE p2.libart LIKE 'R%') AND p.libart NOT LIKE 'R%';
+
 -- 15. Editer la liste des fournisseurs susceptibles de livrer les produits dont le stock est inférieur ou égal à 150 % du stock d'alerte. La liste est triée par produit puis fournisseur
 
+SELECT p.libart, f.nomfou FROM produit p JOIN ligcom l ON p.codart = l.codart JOIN entcom e ON l.numcom = e.numcom JOIN fournis f ON e.numfou = f.numfou WHERE p.stkphy <= (1.5 * p.stkale) ORDER BY p.libart, f.nomfou;
+
 -- 16. Éditer la liste des fournisseurs susceptibles de livrer les produit dont le stock est inférieur ou égal à 150 % du stock d'alerte et un délai de livraison d'au plus 30 jours. La liste est triée par fournisseur puis produit
+
+SELECT f.nomfou, p.libart FROM produit p JOIN ligcom l ON p.codart = l.codart JOIN entcom e ON l.numcom = e.numcom JOIN fournis f ON e.numfou = f.numfou JOIN vente v ON l.codart = v.codart WHERE p.stkphy <= (1.5 * p.stkale) AND v.delliv <= 30 ORDER BY f.nomfou, p.codart;
 
 -- 17. Avec le même type de sélection que ci-dessus, sortir un total des stocks par fournisseur trié par total décroissant
 
