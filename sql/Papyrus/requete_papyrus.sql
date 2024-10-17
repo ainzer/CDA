@@ -72,18 +72,36 @@ SELECT f.nomfou, p.libart FROM produit p JOIN ligcom l ON p.codart = l.codart JO
 
 -- 17. Avec le même type de sélection que ci-dessus, sortir un total des stocks par fournisseur trié par total décroissant
 
+SELECT f.nomfou, SUM(p.stkphy) AS total_stock FROM produit p JOIN ligcom l ON p.codart = l.codart JOIN entcom e ON l.numcom = e.numcom JOIN fournis f ON e.numfou = f.numfou WHERE p.stkphy <= (1.5 * p.stkale) GROUP BY f.nomfou ORDER BY total_stock DESC;
+
 -- 18. En fin d'année, sortir la liste des produits dont la quantité réellement commandée dépasse 90% de la quantité annuelle prévue.
 
+SELECT p.libart, SUM(l.qtecde) AS quantite_commande, p.qteann FROM produit p JOIN ligcom l ON p.codart = l.codart JOIN entcom e ON l.numcom = e.numcom WHERE e.datcom >= '2023-01-01' AND e.datcom < '2024-01-01' GROUP BY p.libart, p.qteann HAVING SUM(l.qtecde) > 0.9 * p.qteann;
+
 -- 19. Calculer le chiffre d'affaire par fournisseur pour l'année 93 sachant que les prix indiqués sont hors taxes et que le taux de TVA est 20%.
+
+SELECT f.nomfou, SUM(v.prix1 * l.qtecde) AS chiffre_affaires_ht, SUM(v.prix1 * l.qtecde) * 1.2 AS chiffre_affaire_ttc FROM fournis f JOIN entcom e ON f.numfou = e.numfou JOIN ligcom l ON e.numcom = l.numcom JOIN vente v ON l.codart = v.codart WHERE e.datcom >= '1993-01-01' AND e.datcom < '1994-01-01' GROUP BY f.nomfou ORDER BY chiffre_affaires_ht DESC;
 
 -- IV LES BESOINS DE MISE A JOUR
 
 -- 1. Application d'une augmentation de tarif de 4% pour le prix 1 et de 2% pour le prix2 pour le fournisseur 9180
 
+UPDATE vente v SET v.prix1 = v.prix1 * 1.04, v.prix2 = v.prix2 * 1.02 WHERE v.codart IN (SELECT l.codart FROM ligcom l JOIN entcom e ON l.numcom = e.numcom WHERE e.numfou = '9180');
+
 -- 2. Dans la table vente, mettre à jour le prix2 des articles dont le prix2 est null, en affectant a prix2 la valeur de prix1.
+
+UPDATE vente SET prix2 = prix1 WHERE prix2 IS NULL;
 
 -- 3. Mettre à jour le champ obscom en positionnant '*****' pour toutes les commandes dont le fournisseur a un indice de satisfaction <5
 
+UPDATE entcom e SET e.obscom = '*****' WHERE e.numfou IN (SELECT f.numfou FROM fournis f WHERE f.satisf < 5);
+
 -- 4. Suppression du produit I110
 
+DELETE FROM vente WHERE codart = 'I110';
+
+DELETE FROM produit WHERE codart = 'I110';
+
 -- 5. Suppression des entête de commande qui n'ont aucune ligne
+
+DELETE FROM entcom WHERE numcom NOT IN (SELECT numcom FROM ligcom);
